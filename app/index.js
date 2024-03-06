@@ -5,7 +5,25 @@ const cors = require('cors')
 
 const app = express()
 
-app.use(cors())
+const whitelist = [
+  'http://localhost:5000',
+  'https://colitas-felices.vercel.app'
+]
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true)
+    if (whitelist.indexOf(origin) === -1) {
+      const reason =
+        'The CORS policy for this site does not ' +
+        'allow access from the specified Origin.'
+      return callback(new Error(reason), false)
+    }
+    return callback(null, true)
+  }
+}
+
+app.use(cors(corsOptions))
 
 app.use(express.json())
 
